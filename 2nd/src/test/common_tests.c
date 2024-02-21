@@ -6,11 +6,12 @@
 /*   By: fhongu <fhongu@student.42madrid.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/17 20:43:22 by fhongu            #+#    #+#             */
-/*   Updated: 2024/02/19 23:06:08 by fhongu           ###   ########.fr       */
+/*   Updated: 2024/02/21 22:53:06 by fhongu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minitalk_test.h"
+#include <libft.h>
 
 void	test_common(void)
 {
@@ -21,8 +22,14 @@ void	test_common(void)
 	printf(TESTH, "chunk2bytes 1 Empty string ", test_result);
 	test_result = make_test_result_string(test_chunk2bytes_one_char());
 	printf(TESTH, "chunk2bytes 2 One char ", test_result);
-	test_result = make_test_result_string(test_chunk2bytes_full_chunk());
-	printf(TESTH, "chunk2bytes 2 Full chunk of four chars ", test_result);
+	test_result = make_test_result_string(test_chunk2bytes_full_chunk("abcd"));
+	printf(TESTH, "chunk2bytes 2 Full chunk \"abcd\" ", test_result);
+	test_result = make_test_result_string(test_chunk2bytes_full_chunk("*\t4%"));
+	printf(TESTH, "chunk2bytes 3 Full chunk '*\\t4%' ", test_result);
+	test_result = make_test_result_string(test_bytes2chunk_one_char());
+	printf(TESTH, "bytes2chunk 1 One char 'a' ", test_result);
+	test_result = make_test_result_string(test_bytes2chunk_abcd());
+	printf(TESTH, "bytes2chunk 1 String \"abcd\" ", test_result);
 }
 
 int	test_chunk2bytes_empty_string(void)
@@ -45,12 +52,38 @@ int	test_chunk2bytes_one_char(void)
 	return (result == 'a');
 }
 
-int	test_chunk2bytes_full_chunk(void)
+int	test_chunk2bytes_full_chunk(char *full_chunk)
 {
-	char	*full_chunk;
+	int		result;
+	int		expected_result;
+
+	expected_result = (full_chunk[0] + (full_chunk[1] << 8)+ (full_chunk[2] << 16) + (full_chunk[3] << 24));
+	result = chunk2bytes(full_chunk);
+	return (result == expected_result);
+}
+
+int	test_bytes2chunk_one_char(void)
+{
+	char	one_char;
+	char	*str;
 	int		result;
 
-	full_chunk = "abcd";
-	result = chunk2bytes(full_chunk);
-	return (result == (('d' << 24) + ('c' << 16) + ('b' << 8) + 'a'));
+	one_char = 'a';
+	str = bytes2chunk(one_char);
+	result = *str == one_char;
+	ft_free((void **) &str);
+	return (result);
+}
+
+int	test_bytes2chunk_abcd(void)
+{
+	char	*str;
+	int		abcd;
+	int		result;
+
+	abcd = ('a' + ('b' << 8) + ('c' << 16) + ('d' << 24));
+	str = bytes2chunk(abcd);
+	result = ft_strncmp(str, "abcd", 4);
+	ft_free((void **) &str);
+	return (result == 0);
 }

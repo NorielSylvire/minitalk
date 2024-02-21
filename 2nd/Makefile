@@ -92,6 +92,7 @@ test: $(TOBJ) $(UOBJ) #all!!!!!!!
 	@echo "$(GREEN)$(TNAME) compiled successfully.$(DEF_COLOR)\n"
 	@echo "$(MAGENTA)Running tests.$(DEF_COLOR)\n"
 	@./$(BIN_PATH)/$(TNAME)
+	@make fclean
 
 $(OBJ_PATH)/%.o: %.c
 	@mkdir -p $(@D)
@@ -102,13 +103,25 @@ mkdir:
 	@mkdir -p $(OBJ_PATH)
 #	@mkdir -p $(OBJ_PATH)/other/path
 
-clean:
+preclean:
+	@echo "\n$(YELLOW)Cleaning project up...$(DEF_COLOR)"
+
+postclean:
+	@echo "\n$(GREEN)Done!$(DEF_COLOR)"
+
+clean: preclean clean-body postclean
+
+clean-body:
 	@$(RM) $(RMFLAGS) $(OBJ_PATH)
 
-fclean: clean
+fclean: preclean fclean-body postclean
+
+fclean-body: clean-body
 	@$(RM) $(RMFLAGS) $(NAME)
 
-xclean: fclean
+xclean: preclean xclean-body postclean
+
+xclean-body: fclean-body
 	@$(RM) $(RMFLAGS) $(UNW)
 
 re: fclean all
