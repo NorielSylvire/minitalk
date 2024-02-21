@@ -1,29 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ascii_converter.c                                  :+:      :+:    :+:   */
+/*   tmain.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fhongu <fhongu@student.42madrid.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/17 12:12:43 by fhongu            #+#    #+#             */
-/*   Updated: 2024/02/19 23:04:56 by fhongu           ###   ########.fr       */
+/*   Created: 2024/02/17 22:05:23 by fhongu            #+#    #+#             */
+/*   Updated: 2024/02/17 23:14:05 by fhongu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minitalk.h"
+#include "../include/minitalk_test.h"
 
-int	chunk2bytes(char *str)
+int	main(void)
 {
-	int	res;
-	int	i;
+	printf(YELLOW"Tests for minitalk\n"DEF_COLOR);
+	test_common();
+	printf(YELLOW"\n\nFinished testing minitalk!\n"DEF_COLOR);
+	return (0);
+}
 
-	res = 0;
-	i = 0;
-	while (str[i] && i < 4)
-	{
-		res += str[i];
-		res = res << 8 * i;
-		i++;
-	}
-	return (res);
+char	*make_test_result_string(int res)
+{
+	if (res)
+		return (GREEN"PASSED"DEF_COLOR);
+	return (RED"FAILED"DEF_COLOR);
 }

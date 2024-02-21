@@ -1,29 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ascii_converter.c                                  :+:      :+:    :+:   */
+/*   minitalk_test.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fhongu <fhongu@student.42madrid.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/17 12:12:43 by fhongu            #+#    #+#             */
-/*   Updated: 2024/02/19 23:04:56 by fhongu           ###   ########.fr       */
+/*   Created: 2024/02/17 20:54:46 by fhongu            #+#    #+#             */
+/*   Updated: 2024/02/19 23:06:55 by fhongu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minitalk.h"
+#ifndef MINITALK_TEST_H
+# define MINITALK_TEST_H
+# include "client.h"
+# include <libtest42.h>
+# define TESTH "\nTest %-60s [%s]"
 
-int	chunk2bytes(char *str)
-{
-	int	res;
-	int	i;
+char	*make_test_result_string(int res);
+void	test_common(void);
+int		test_chunk2bytes_empty_string(void);
+int		test_chunk2bytes_one_char(void);
+int		test_chunk2bytes_full_chunk(void);
 
-	res = 0;
-	i = 0;
-	while (str[i] && i < 4)
-	{
-		res += str[i];
-		res = res << 8 * i;
-		i++;
-	}
-	return (res);
-}
+#endif // !MINITALK_TEST_H

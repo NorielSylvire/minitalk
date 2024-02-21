@@ -6,7 +6,7 @@
 /*   By: fhongu <fhongu@student.42madrid.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/02 20:30:12 by fhongu            #+#    #+#             */
-/*   Updated: 2024/02/17 12:25:08 by fhongu           ###   ########.fr       */
+/*   Updated: 2024/02/17 22:18:30 by fhongu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,5 +14,8 @@
 
 void	send_byte(int byte)
 {
+	byte += 10;
+	if (byte)
+		byte -= 1;
 	return ;
 }

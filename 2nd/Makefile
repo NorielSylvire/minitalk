@@ -6,7 +6,7 @@ CC = clang
 CFLAGS = -Wall -Wextra -Werror -I $(INC_PATH) $(DBGFLAGS)
 COBJFLAGS = $(CFLAGS) -c
 DBGFLAGS =
-RMFLAGS = -r
+RMFLAGS = -fr
 
 # Paths
 TGT_PATH = .
@@ -18,6 +18,7 @@ INC_PATH = $(SRC_PATH)/include
 LFT_PATH = $(SRC_PATH)/libft
 MSRC_PATH = $(SRC_PATH)/main/server
 CLNT_PATH = $(SRC_PATH)/main/client
+CMMN_PATH = $(SRC_PATH)/main/common
 BSRC_PATH = $(SRC_PATH)/bonus
 TSRC_PATH = $(SRC_PATH)/test
 
@@ -26,15 +27,18 @@ HDRS =
 MSRC =
 MAIN = $(MSRC_PATH)/main.c
 OBJ = $(MSRC:%.c=$(OBJ_PATH)/%.o)
-CSRC =
+CSRC = $(CLNT_PATH)/client.c
 CMAIN = $(CLNT_PATH)/main.c
 COBJ = $(CSRC:%.c=$(OBJ_PATH)/%.o)
+USRC = $(CMMN_PATH)/ascii_converter.c
+UOBJ = $(USRC:%.c=$(OBJ_PATH)/%.o)
 BSRC =
 BMAIN = $(BSRC_PATH)/main.c
 BOBJ = $(BSRC:%.c=$(OBJ_PATH)/%.o)
-TSRC =
-TMAIN = $(TSRC_PATH)/main.c
-TOBJ = $(TSRC:%.c=$(OBJ_PATH)/%.o)
+TSRC = $(TSRC_PATH)/common_tests.c
+TMAIN = $(TSRC_PATH)/tmain.c
+TOBJ = $(TSRC:%.c=$(OBJ_PATH)/%.o) \
+	$(TMAIN:%.c=$(OBJ_PATH)/%.o)
 
 # Config
 # Unwanted files to be deleted
@@ -81,10 +85,10 @@ debug: all
 bonus: all
 # Or compile here if you'll use separate bonus and mandatory files.
 
-test: all $(TOBJ) $(TMAIN)
+test: $(TOBJ) $(UOBJ) #all!!!!!!!
 	@echo "\n$(GREEN)$(TNAME) objects compiled successfully.$(DEF_COLOR)\n"
 	@echo "$(YELLOW)Linking objects.$(DEF_COLOR)\n"
-	@$(CC) $(CFLAGS) $(TOBJ) $(TMAIN:%.c=$(OBJ_PATH)/%.o) -L$(BIN_PATH) -lft -o $(TNAME)
+	@$(CC) $(CFLAGS) $(TOBJ) $(UOBJ) -L$(BIN_PATH) -lft -ltest42 -o $(TNAME)
 	@echo "$(GREEN)$(TNAME) compiled successfully.$(DEF_COLOR)\n"
 	@echo "$(MAGENTA)Running tests.$(DEF_COLOR)\n"
 	@./$(BIN_PATH)/$(TNAME)
@@ -99,13 +103,13 @@ mkdir:
 #	@mkdir -p $(OBJ_PATH)/other/path
 
 clean:
-	@$(RM) $(OBJ_PATH)
+	@$(RM) $(RMFLAGS) $(OBJ_PATH)
 
 fclean: clean
-	@$(RM) $(NAME)
+	@$(RM) $(RMFLAGS) $(NAME)
 
 xclean: fclean
-	@$(RM) $(UNW)
+	@$(RM) $(RMFLAGS) $(UNW)
 
 re: fclean all
 
