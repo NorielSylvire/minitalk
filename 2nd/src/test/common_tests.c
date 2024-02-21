@@ -6,7 +6,7 @@
 /*   By: fhongu <fhongu@student.42madrid.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/17 20:43:22 by fhongu            #+#    #+#             */
-/*   Updated: 2024/02/21 22:53:06 by fhongu           ###   ########.fr       */
+/*   Updated: 2024/02/22 00:49:54 by fhongu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	test_common(void)
 	test_result = make_test_result_string(test_chunk2bytes_full_chunk("abcd"));
 	printf(TESTH, "chunk2bytes 2 Full chunk \"abcd\" ", test_result);
 	test_result = make_test_result_string(test_chunk2bytes_full_chunk("*\t4%"));
-	printf(TESTH, "chunk2bytes 3 Full chunk '*\\t4%' ", test_result);
+	printf(TESTH, "chunk2bytes 3 Full chunk \"*\\t4%\" ", test_result);
 	test_result = make_test_result_string(test_bytes2chunk_one_char());
 	printf(TESTH, "bytes2chunk 1 One char 'a' ", test_result);
 	test_result = make_test_result_string(test_bytes2chunk_abcd());
