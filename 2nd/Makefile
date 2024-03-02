@@ -1,5 +1,6 @@
 # Tools
-NAME = server
+NAME = minitalk
+SNAME = server
 CNAME = client
 TNAME = minitalk-test
 CC = clang
@@ -16,7 +17,7 @@ DBG_PATH = debug
 SRC_PATH = src
 INC_PATH = $(SRC_PATH)/include
 LFT_PATH = $(SRC_PATH)/libft
-MSRC_PATH = $(SRC_PATH)/main/server
+SSRC_PATH = $(SRC_PATH)/main/server
 CLNT_PATH = $(SRC_PATH)/main/client
 CMMN_PATH = $(SRC_PATH)/main/common
 BSRC_PATH = $(SRC_PATH)/bonus
@@ -24,11 +25,11 @@ TSRC_PATH = $(SRC_PATH)/test
 
 # Source and object files
 HDRS =
-MSRC =
-MAIN = $(MSRC_PATH)/main.c
-OBJ = $(MSRC:%.c=$(OBJ_PATH)/%.o)
+SSRC = $(SSRC_PATH)/server.c
+SMAIN = $(SSRC_PATH)/smain.c
+SOBJ = $(SSRC:%.c=$(OBJ_PATH)/%.o)
 CSRC = $(CLNT_PATH)/client.c
-CMAIN = $(CLNT_PATH)/main.c
+CMAIN = $(CLNT_PATH)/cmain.c
 COBJ = $(CSRC:%.c=$(OBJ_PATH)/%.o)
 USRC = $(CMMN_PATH)/ascii_converter.c
 UOBJ = $(USRC:%.c=$(OBJ_PATH)/%.o)
@@ -59,9 +60,12 @@ MAGENTA = \033[0;95m
 CYAN = \033[0;96m
 WHITE = \033[0;97m
 
-all: $(CNAME) $(NAME)
+all: $(CNAME) $(SNAME)
 
-$(CNAME): mkdir $(COBJ) $(CMAIN)
+$(NAME): all
+	@echo "$(GREEN)$(NAME) compiled successfully.$(DEF_COLOR)\n"
+
+$(CNAME): mkdir $(COBJ) $(CMAIN:%.c=$(OBJ_PATH)/%.o)
 	@echo "\n$(GREEN)$(CNAME) objects compiled successfully.$(DEF_COLOR)\n"
 	@make -C $(LFT_PATH)
 	@cp $(LFT_PATH)/libft.a $(BIN_PATH)/libft
@@ -69,13 +73,13 @@ $(CNAME): mkdir $(COBJ) $(CMAIN)
 	@$(CC) $(CFLAGS) $(COBJ) $(CMAIN:%.c=$(OBJ_PATH)/%.o) -L$(BIN_PATH) -lft -o $@
 	@echo "$(GREEN)$(CNAME) compiled successfully.$(DEF_COLOR)\n"
 
-$(NAME): mkdir $(OBJ) $(MAIN)
-	@echo "\n$(GREEN)$(NAME) objects compiled successfully.$(DEF_COLOR)\n"
+$(SNAME): mkdir $(SOBJ) $(SMAIN:%.c=$(OBJ_PATH)/%.o)
+	@echo "\n$(GREEN)$(SNAME) objects compiled successfully.$(DEF_COLOR)\n"
 	@make -C $(LFT_PATH)
 	@cp $(LFT_PATH)/libft.a $(BIN_PATH)/libft
 	@echo "\n$(YELLOW)Linking $(NAME) objects.$(DEF_COLOR)\n"
-	@$(CC) $(CFLAGS) $(OBJ) $(MAIN:%.c=$(OBJ_PATH)/%.o) -L$(BIN_PATH) -lft -o $@
-	@echo "$(GREEN)$(NAME) compiled successfully.$(DEF_COLOR)\n"
+	@$(CC) $(CFLAGS) $(SOBJ) $(SMAIN:%.c=$(OBJ_PATH)/%.o) -L$(BIN_PATH) -lft -o $@
+	@echo "$(GREEN)$(SNAME) compiled successfully.$(DEF_COLOR)\n"
 
 debug: DBGFLAGS := -g
 debug: all
@@ -117,7 +121,8 @@ clean-body:
 fclean: preclean fclean-body postclean
 
 fclean-body: clean-body
-	@$(RM) $(RMFLAGS) $(NAME) $(CNAME) $(TNAME)
+	@$(RM) $(RMFLAGS) $(SNAME) $(CNAME) $(TNAME) libft
+	@make fclean -C $(LFT_PATH)
 
 xclean: preclean xclean-body postclean
 

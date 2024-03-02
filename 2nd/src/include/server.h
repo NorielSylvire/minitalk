@@ -1,22 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minitalk.h                                         :+:      :+:    :+:   */
+/*   server.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fhongu <fhongu@student.42madrid.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/17 12:23:06 by fhongu            #+#    #+#             */
-/*   Updated: 2024/03/02 10:00:28 by fhongu           ###   ########.fr       */
+/*   Created: 2024/03/02 10:01:47 by fhongu            #+#    #+#             */
+/*   Updated: 2024/03/02 10:11:29 by fhongu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINITALK_H
-# define MINITALK_H
-# include <libft.h>
-# include <stdlib.h>
-# include <signal.h>
+#ifndef SERVER_H
+# define SERVER_H
+# include "minitalk.h"
+# define MESSAGE_INI_SIZE 40
+# define MESSAGE_MAX_LOAD 0.75f
+# define MESSAGE_RESIZE_FACTOR 2
 
-int		chunk2bytes(char *str);
-char	*bytes2chunk(int bytes);
+void	string_parser(int signo, siginfo_t *info, void *uctx);
 
-#endif // !MINITALK_H
+#endif // !SERVER_H
