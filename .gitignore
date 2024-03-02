@@ -1,0 +1,7 @@
+server
+client
+minitalk-test
+.DS_Store
+*.o
+*.gch
+*/obj/*

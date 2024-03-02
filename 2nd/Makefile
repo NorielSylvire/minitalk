@@ -3,9 +3,9 @@ NAME = server
 CNAME = client
 TNAME = minitalk-test
 CC = clang
-CFLAGS = -Wall -Wextra -Werror -I $(INC_PATH) $(DBGFLAGS)
+CFLAGS = -Wall -Wextra -Werror $(DBGFLAGS) -I $(INC_PATH)
 COBJFLAGS = $(CFLAGS) -c
-DBGFLAGS =
+DBGFLAGS = -g
 RMFLAGS = -fr
 
 # Paths
@@ -35,7 +35,8 @@ UOBJ = $(USRC:%.c=$(OBJ_PATH)/%.o)
 BSRC =
 BMAIN = $(BSRC_PATH)/main.c
 BOBJ = $(BSRC:%.c=$(OBJ_PATH)/%.o)
-TSRC = $(TSRC_PATH)/common_tests.c
+TSRC = $(TSRC_PATH)/common_tests.c \
+			 $(TSRC_PATH)/client_tests.c
 TMAIN = $(TSRC_PATH)/tmain.c
 TOBJ = $(TSRC:%.c=$(OBJ_PATH)/%.o) \
 	$(TMAIN:%.c=$(OBJ_PATH)/%.o)
@@ -85,10 +86,10 @@ debug: all
 bonus: all
 # Or compile here if you'll use separate bonus and mandatory files.
 
-test: $(TOBJ) $(UOBJ) #all!!!!!!!
+test: $(TOBJ) $(UOBJ) $(COBJ) #all!!!!!!!
 	@echo "\n$(GREEN)$(TNAME) objects compiled successfully.$(DEF_COLOR)\n"
 	@echo "$(YELLOW)Linking objects.$(DEF_COLOR)\n"
-	@$(CC) $(CFLAGS) $(TOBJ) $(UOBJ) -L$(BIN_PATH) -lft -ltest42 -o $(TNAME)
+	@$(CC) $(CFLAGS) $(TOBJ) $(UOBJ) $(COBJ) -L$(BIN_PATH) -lft -ltest42 -o $(TNAME)
 	@echo "$(GREEN)$(TNAME) compiled successfully.$(DEF_COLOR)\n"
 	@echo "$(MAGENTA)Running tests.$(DEF_COLOR)\n"
 	@./$(BIN_PATH)/$(TNAME)
@@ -101,7 +102,6 @@ $(OBJ_PATH)/%.o: %.c
 mkdir:
 	@mkdir -p $(BIN_PATH)
 	@mkdir -p $(OBJ_PATH)
-#	@mkdir -p $(OBJ_PATH)/other/path
 
 preclean:
 	@echo "\n$(YELLOW)Cleaning project up...$(DEF_COLOR)"
@@ -117,7 +117,7 @@ clean-body:
 fclean: preclean fclean-body postclean
 
 fclean-body: clean-body
-	@$(RM) $(RMFLAGS) $(NAME)
+	@$(RM) $(RMFLAGS) $(NAME) $(CNAME) $(TNAME)
 
 xclean: preclean xclean-body postclean
 

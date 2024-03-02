@@ -6,7 +6,7 @@
 /*   By: fhongu <fhongu@student.42madrid.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/17 20:43:22 by fhongu            #+#    #+#             */
-/*   Updated: 2024/02/22 00:49:54 by fhongu           ###   ########.fr       */
+/*   Updated: 2024/03/01 20:23:20 by fhongu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ void	test_common(void)
 	printf(TESTH, "bytes2chunk 1 One char 'a' ", test_result);
 	test_result = make_test_result_string(test_bytes2chunk_abcd());
 	printf(TESTH, "bytes2chunk 1 String \"abcd\" ", test_result);
+	test_result = make_test_result_string(test_bytes2chunk_symbols());
+	printf(TESTH, "bytes2chunk 1 String \"* \\t$\" ", test_result);
 }
 
 int	test_chunk2bytes_empty_string(void)
@@ -84,6 +86,19 @@ int	test_bytes2chunk_abcd(void)
 	abcd = ('a' + ('b' << 8) + ('c' << 16) + ('d' << 24));
 	str = bytes2chunk(abcd);
 	result = ft_strncmp(str, "abcd", 4);
+	ft_free((void **) &str);
+	return (result == 0);
+}
+
+int	test_bytes2chunk_symbols(void)
+{
+	char	*str;
+	int		abcd;
+	int		result;
+
+	abcd = ('*' + (' ' << 8) + ('\t' << 16) + ('$' << 24));
+	str = bytes2chunk(abcd);
+	result = ft_strncmp(str, "* \t$", 4);
 	ft_free((void **) &str);
 	return (result == 0);
 }
