@@ -6,7 +6,7 @@
 /*   By: fhongu <fhongu@student.42madrid.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 20:25:50 by fhongu            #+#    #+#             */
-/*   Updated: 2024/03/02 09:48:10 by fhongu           ###   ########.fr       */
+/*   Updated: 2024/03/04 19:29:41 by fhongu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	test_client(void)
 	test_result = make_test_result_string(test_send_string_cool());
 	printf(TESTH, "send_string 1 String \"cool\" ", test_result);
 	test_result = make_test_result_string(test_send_string_lorem_ipsum());
-	printf(TESTH, "send_string 1 String \"Lorem ipsum d0lor sit amet.\" ", test_result);
+	printf(TESTH, "send_string 2 String \"Lorem ipsum d0lor sit amet.\" ", test_result);
 }
 
 int	test_send_bit_0(void)
