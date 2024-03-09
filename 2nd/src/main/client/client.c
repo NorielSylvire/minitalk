@@ -6,7 +6,7 @@
 /*   By: fhongu <fhongu@student.42madrid.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/02 20:30:12 by fhongu            #+#    #+#             */
-/*   Updated: 2024/03/04 22:50:00 by fhongu           ###   ########.fr       */
+/*   Updated: 2024/03/09 22:42:09 by fhongu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,26 +17,27 @@ void	send_bit(int bit, int pid)
 {
 	int	signal;
 
-	printf("%d", bit);
+	//printf("%d\n", bit);
 	if (!bit)
 		signal = SIGUSR1;
 	else
 		signal = SIGUSR2;
 	kill(pid, signal);
-	usleep(100);
-	printf("unpaused!\n");
 }
 
 void	send_byte(int byte, int pid, int i)
 {
-	if (i == 0 && byte != 0)
-		printf("\nsending byte %c\n", byte);
-	else if (byte == 0 && i == 0)
-		printf("\nsending null terminator. Should see 8 0s being sent!\n");
+	//if (i == 0 && byte != 0)
+		//printf("\nsending byte %c\n", byte);
+	//else if (byte == 0 && i == 0)
+		//printf("\nsending null terminator. Should see 8 0s being sent!\n");
 	byte = byte % 256;
 	if (i < 7)
 		send_byte(byte / 2, pid, i + 1);
 	send_bit(byte % 2, pid);
+	//printf("signal sent, pausing\n");
+	pause();
+	//printf("unpaused!\n");
 }
 
 void	send_string(char *str, int pid)
@@ -49,11 +50,11 @@ void	send_string(char *str, int pid)
 		send_byte(str[i], pid, 0);
 		i++;
 	}
-	printf("string sent, sending null terminator!\n");
+	//printf("string sent, sending null terminator!\n");
 	send_byte('\0', pid, 0);
 }
 
-void	ping(char *str, int pid)
+void	ping(int pid)
 {
 	int	i;
 
@@ -70,6 +71,4 @@ void	ping(char *str, int pid)
 		}
 		printf("no response, pinging again!\n");
 	}
-	if (g_server_response)
-		send_string(str, pid);
 }

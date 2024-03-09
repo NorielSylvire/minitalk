@@ -6,7 +6,7 @@
 /*   By: fhongu <fhongu@student.42madrid.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/02 20:30:16 by fhongu            #+#    #+#             */
-/*   Updated: 2024/03/04 22:51:53 by fhongu           ###   ########.fr       */
+/*   Updated: 2024/03/09 22:41:46 by fhongu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,25 +24,22 @@ static void	print_string(char *str, int i);
 //then checks if the sender is the same as the previous sender, and if so
 //parses the bit, otherwise it doesn't do anything.
 
-void	string_parser(int signo, siginfo_t *info, void *uctx)
+void	string_parser(void)
 {
 	static int			nbits;
 	static int			byte;
 	static int			i;
-	struct sigaction	new_action;
 
-	printf("bit %d received from %d\n", signo == SIGUSR2, g_client_pid);
-	if (nbits <= 7 && info->si_pid == g_client_pid)
+	if (nbits <= 7)
 	{
 		byte *= 2;
-		if (signo == SIGUSR2)
+		if (g_info->si_signo == SIGUSR2)
 			byte++;
 		nbits++;
-		printf("byte now %d\n", byte);
 	}
-	if (nbits == 8 && info->si_pid == g_client_pid)
+	if (nbits == 8)
 	{
-		printf("byte %c parsed\n", byte);
+		//printf("parsed byte %c\n", byte);
 		make_string(byte, i);
 		if (byte != '\0')
 			i++;
@@ -51,19 +48,8 @@ void	string_parser(int signo, siginfo_t *info, void *uctx)
 		nbits = 0;
 		byte = 0;
 	}
-	printf("all the above done, killing %d\n", g_client_pid);
-	kill(g_client_pid, SIGUSR2);
-	uctx = NULL;
 	if (byte == '\0' && i == 0 && nbits == 0)
-	{
-		printf("global restarted\n");
-		g_client_pid = 0;
-		new_action.sa_flags = SA_SIGINFO;
-		sigemptyset(&new_action.sa_mask);
-		new_action.sa_sigaction = pong;
-		sigaction(SIGUSR1, &new_action, NULL);
-		sigaction(SIGUSR2, &new_action, NULL);
-	}
+		g_info = NULL;
 }
 
 static void	make_string(int ch, int i)
@@ -73,25 +59,25 @@ static void	make_string(int ch, int i)
 
 	if (!str)
 	{
-		printf("making initial string of size %d\n", MESSAGE_INI_SIZE);
+		//printf("making initial string of size %d\n", MESSAGE_INI_SIZE);
 		str = ft_calloc(MESSAGE_INI_SIZE, sizeof (char));
 		curr_size = MESSAGE_INI_SIZE;
 	}
 	add_char(&str, ch, i, &curr_size);
-	printf("current string looks like \"%s\"\n", str);
+	//printf("current string looks like \"%s\"\n", str);
 	if (ch == '\0')
-		print_string(str, i);
+		print_string(str, i + 1);
 }
 
 static void	add_char(char **str, int ch, int i, int *curr_size)
 {
 	char	*new_str;
 
-	printf("adding char \'%c\' to string \"%s\"\n", ch, *str);
+	//printf("adding char \'%c\' to string \"%s\"\n", ch, *str);
 	(*str)[i] = ch;
 	if (i >= *curr_size * MESSAGE_MAX_LOAD)
 	{
-		printf("resizing string!\n");
+		//printf("resizing string!\n");
 		*curr_size *= MESSAGE_RESIZE_FACTOR;
 		new_str = ft_calloc(*curr_size, sizeof (char));
 		ft_strlcpy(new_str, *str, *curr_size);
@@ -102,27 +88,25 @@ static void	add_char(char **str, int ch, int i, int *curr_size)
 
 static void	print_string(char *str, int i)
 {
-	printf("string fully parsed, printing:\n");
+	//printf("string fully parsed, printing:\n");
 	str[i] = '\n';
-	write(1, str, i);
+	write(1, str, i + 1);
 }
 
 void	pong(int signo, siginfo_t *info, void *uctx)
 {
-	struct sigaction	new_action;
+	int	spid;
 
-	printf("signal %d received from %d\n", signo == SIGUSR2, info->si_pid);
-	printf("current client pid is %d\n", g_client_pid);
-	if (g_client_pid == 0 && info->si_pid != getpid())
+	spid = getpid();
+	//printf("signal %d received from %d\n", signo == SIGUSR2, info->si_pid);
+	//printf("global's pid is %d\n", (g_info != NULL) ? g_info->si_pid : 0);
+	if (g_info == NULL && info->si_pid != spid && info->si_pid != 0)
 	{
 		printf("pong\n");
-		g_client_pid = info->si_pid;
-		kill(g_client_pid, SIGUSR2);
-		new_action.sa_flags = SA_SIGINFO;
-		sigemptyset(&new_action.sa_mask);
-		new_action.sa_sigaction = string_parser;
-		sigaction(SIGUSR1, &new_action, NULL);
-		sigaction(SIGUSR2, &new_action, NULL);
+		kill(info->si_pid, SIGUSR2);
 	}
+	if (info->si_pid != spid && info->si_pid != 0)
+		g_info = info;
 	uctx = NULL;
+	signo = SIGUSR2;
 }
