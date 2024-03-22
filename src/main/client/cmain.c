@@ -1,44 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ascii_converter.c                                  :+:      :+:    :+:   */
+/*   cmain.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fhongu <fhongu@student.42madrid.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/17 12:12:43 by fhongu            #+#    #+#             */
-/*   Updated: 2024/03/10 08:57:16 by fhongu           ###   ########.fr       */
+/*   Created: 2024/03/02 09:56:26 by fhongu            #+#    #+#             */
+/*   Updated: 2024/03/10 08:25:06 by fhongu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minitalk.h"
+#include "../../include/client.h"
 
-int	chunk2bytes(char *chunk)
+void	sig_handler(int sig)
 {
-	int	res;
-	int	i;
-
-	res = 0;
-	i = 0;
-	while (chunk[i] && i < 4)
-	{
-		res += chunk[i] << 8 * i;
-		i++;
-	}
-	return (res);
+	g_server_response = sig == SIGUSR2;
 }
 
-char	*bytes2chunk(int bytes)
+int	main(int argc, char **argv)
 {
-	char	*res;
-	int		i;
+	int	spid;
 
-	res = ft_calloc(4, 1);
-	i = 0;
-	while (bytes > 0 && i < 4)
+	signal(SIGUSR2, sig_handler);
+	signal(SIGUSR1, sig_handler);
+	if (argc == 3)
 	{
-		res[i] = bytes % 256;
-		bytes = bytes >> 8;
-		i++;
+		spid = ft_atoi(argv[1]);
+		ping(spid);
 	}
-	return (res);
+	else
+		write(1, "Wrong arguments. Usage: client [pid] [message string]", 53);
+	if (g_server_response)
+		send_string(argv[2], spid);
 }
